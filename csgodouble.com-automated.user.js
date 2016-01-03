@@ -224,7 +224,7 @@ Automated.prototype.bet = function(amount, color) {
     var self = this;
     color = color || this.default_color;
 
-    if (['green', 'red', 'black'].indexOf(color) < 0 || amount > this.balance) {
+    if (['green', 'red', 'black'].indexOf(color) < 0 || amount > this.balance || amount === 0) {
         console.log('[Automated] Invalid bet!');
         return false;
     }
