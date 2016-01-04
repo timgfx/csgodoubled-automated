@@ -230,8 +230,6 @@ Automated.prototype.bet = function(amount, color) {
     }
 
     bet_input.value = amount;
-    this.last_bet = amount;
-    this.last_color = color;
 
     setTimeout(function() {
         if (!bet_buttons[color].disabled) {
@@ -248,6 +246,8 @@ Automated.prototype.bet = function(amount, color) {
                                 self.bet(amount, color);
                             } else {
                                 if (self.debug) { console.log('[Automated] Bet accepted!'); }
+                                self.last_bet = amount;
+                                self.last_color = color;
                             }
                         }, 2500);
                     }
