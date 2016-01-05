@@ -81,8 +81,9 @@ Base value: floor(5000000/2^16) = 76
 #### Okay, I think I understand... But why are streaks so common?
 
 Remember, as the site uses computer randomness, it may feel strange, but that os how it works.
-As a human you wouldn't except more than X `reds` in a row, because you are counting 10, 20, maybe 100 rolls the outcome should give equal chances for both colors, but keep in mind that machine counts *thousands* more times rolls than you can - if in your calculations (100 rolls) `reds` may be chosen 2 times in a row, what is wrong with 20 `reds` streak in thousands of rolls?
-That is why people may call the site rigged, but it is not (I'm not defending the site, just the algorithm itself).
+As a human you wouldn't except more than X `reds` in a row, because you are counting 10, 20, maybe 100 rolls and the outcome should give equal chances for both colors, but keep in mind that machine counts *thousands* more times rolls than you can - if in your calculations (100 rolls) `reds` may be chosen 2 times in a row, what is wrong with 20 `reds` streak in thousands of rolls?
+
+In fact streaks like that are more natural for real randomness than you probably think, that is why people may call the site rigged, but it is not (I'm not defending the site, just the algorithm itself).
 
 
 *[They say it is not, but we don't care, right?](https://www.youtube.com/watch?v=AYnJv68T3MM)
