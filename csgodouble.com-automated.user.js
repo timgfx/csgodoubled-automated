@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.12
+// @version         1.13
 // @author          Mole
 // @match           http://www.csgodouble.com/*
 // @run-at          document-end
@@ -258,9 +258,9 @@ Automated.prototype.updateHistory = function() {
 };
 
 Automated.prototype.updateStats = function() {
-    this.menu.statistics.wins.text = this.stats.wins;
-    this.menu.statistics.loses.text = this.stats.loses;
-    this.menu.statistics.balance.text = this.stats.balance;
+    this.menu.statistics.wins.innerHTML = this.stats.wins;
+    this.menu.statistics.loses.innerHTML = this.stats.loses;
+    this.menu.statistics.balance.innerHTML = this.stats.balance;
     return true;
 };
 
@@ -292,38 +292,36 @@ Automated.prototype.bet = function(amount, color) {
 
     bet_input.value = amount;
 
-    setTimeout(function() {
-        if (!bet_buttons[color].disabled) {
-            if (!self.running) {
-                return false;
-            }
-            var old_balance = self.balance;
-            console.log('[Automated] Betting ' + amount + ' on ' + color);
-            if (!self.simulation) {
-                bet_buttons[color].click();
-                var checker = setInterval(function() {
-                    if (!bet_buttons[color].disabled) {
-                        clearInterval(checker);
-                        setTimeout(function() {
-                            if (self.updateBalance() && self.balance === old_balance) {
-                                console.log('[Automated] Bet rejected, retrying...');
-                                self.bet(amount, color);
-                            } else {
-                                if (self.debug) { console.log('[Automated] Bet accepted!'); }
-                                self.last_bet = amount;
-                                self.last_color = color;
-                                self.waiting_for_bet = false;
-                                return true;
-                            }
-                        }, 2500);
-                    }
-                }, 1000);
-            }
-        } else {
-            console.log('[Automated] Button disabled, retrying...');
-            self.bet(amount, color);
+    if (!bet_buttons[color].disabled) {
+        if (!self.running) {
+            return false;
         }
-    }, (Math.random() * 3 + 2).toFixed(3) * 1000);
+        var old_balance = self.balance;
+        console.log('[Automated] Betting ' + amount + ' on ' + color);
+        if (!self.simulation) {
+            bet_buttons[color].click();
+            var checker = setInterval(function() {
+                if (!bet_buttons[color].disabled) {
+                    clearInterval(checker);
+                    setTimeout(function() {
+                        if (self.updateBalance() && self.balance === old_balance) {
+                            console.log('[Automated] Bet rejected, retrying...');
+                            self.bet(amount, color);
+                        } else {
+                            if (self.debug) { console.log('[Automated] Bet accepted!'); }
+                            self.last_bet = amount;
+                            self.last_color = color;
+                            self.waiting_for_bet = false;
+                            return true;
+                        }
+                    }, 2500);
+                }
+            }, 1000);
+        }
+    } else {
+        console.log('[Automated] Button disabled, retrying...');
+        setTimeout(function() { self.bet(amount, color) }, (Math.random() * 3 + 2).toFixed(3) * 1000);
+    }
 };
 
 Automated.prototype.play = function() {
