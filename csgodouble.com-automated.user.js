@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.16
+// @version         1.17
 // @author          Mole
 // @match           http://www.csgodouble.com/*
 // @run-at          document-end
