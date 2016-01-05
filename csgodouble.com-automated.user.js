@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.1
+// @version         1.11
 // @author          Mole
 // @match           http://www.csgodouble.com/*
 // @run-at          document-end
@@ -73,26 +73,42 @@ function Automated() {
     this.balance = 0;
     this.last_bet = 0;
     this.min_balance = 0;
+    this.starting_balance = 0;
     this.last_color = null;
     this.last_result = null;
     this.history = [];
     this.waiting_for_bet = false;
 
+    this.stats = {
+        'wins': 0,
+        'loses': 0,
+        'balance': 0
+    };
+
     var menu = document.createElement('div');
     menu.innerHTML = '' +
-        '<hr>' +
-        '<h2>CSGODouble.com Automated <small>by Mole</small></h2>' +
-        '<div class="form-group">' +
-            '<div class="btn-group">' +
-                '<button type="button" class="btn btn-success" id="automated-start" disabled>Start</button>' +
-                '<button type="button" class="btn btn-warning" id="automated-stop" disabled>Pause</button>' +
-                '<button type="button" class="btn btn-danger" id="automated-abort" disabled>Abort</button>' +
+        '<div class="row">' +
+            '<div class="col-lg-9">' +
+                '<h2>CSGODouble.com Automated <small>by Mole</small></h2>' +
+                '<div class="form-group">' +
+                    '<div class="btn-group">' +
+                        '<button type="button" class="btn btn-success" id="automated-start" disabled>Start</button>' +
+                        '<button type="button" class="btn btn-warning" id="automated-stop" disabled>Pause</button>' +
+                        '<button type="button" class="btn btn-danger" id="automated-abort" disabled>Abort</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                    '<div class="btn-group">' +
+                        '<button type="button" class="btn btn-default" id="automated-red" ' + (this.default_color === 'red' ? 'disabled' : '') + '>Red</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-black" ' + (this.default_color === 'black' ? 'disabled' : '') + '>Black</button>' +
+                    '</div>' +
+                '</div>' +
             '</div>' +
-        '</div>' +
-        '<div class="form-group">' +
-            '<div class="btn-group">' +
-                '<button type="button" class="btn btn-default" id="automated-red" ' + (this.default_color === 'red' ? 'disabled' : '') + '>Red</button>' +
-                '<button type="button" class="btn btn-default" id="automated-black" ' + (this.default_color === 'black' ? 'disabled' : '') + '>Black</button>' +
+            '<div class="col-lg-3">' +
+                '<h3>Statistics</h3>' +
+                '<p><b>Wins:</b> <span id="automated-stats-wins">' + this.stats.wins + '</span></p>' +
+                '<p><b>Loses:</b> <span id="automated-stats-loses">' + this.stats.loses + '</span></p>' +
+                '<p><b>Balance:</b> <span id="automated-stats-balance">' + this.stats.balance + '</span></p>' +
             '</div>' +
         '</div>' +
         '<div class="form-group">' +
@@ -108,10 +124,10 @@ function Automated() {
             '</div>' +
         '</div>' +
         '<div class="checkbox">' +
-            '<label><input class="" id="automated-stop-on-min-balance" type="checkbox" ' + (this.stop_on_min_balance ? 'checked' : '') + '> Stop on minimal balance (if checked the bot will stop after getting close to minimal balance, otherwise it will continue starting on base)</label>' +
+            '<label><input class="" id="automated-stop-on-min-balance" type="checkbox" ' + (this.stop_on_min_balance ? 'checked' : '') + '> Stop on minimal balance (If checked the bot will stop after getting close to minimal balance, otherwise it will continue starting on base)</label>' +
         '</div>' +
         '<div class="checkbox">' +
-            '<label><input class="" id="automated-debug" type="checkbox" ' + (this.debug ? 'checked' : '') + '> Debug mode (More details in console)</label>' +
+            '<label><input class="" id="automated-debug" type="checkbox" ' + (this.debug ? 'checked' : '') + '> Debug mode (More details will be displayed in browser console)</label>' +
         '</div>' +
         '<div class="checkbox">' +
             '<label><input id="automated-simulation" type="checkbox" ' + (this.simulation ? 'checked' : '') + '> Simulation mode (The value changes depending on rolls, but no coins are actually placed)</label>' +
@@ -128,7 +144,12 @@ function Automated() {
         'simulation': document.getElementById('automated-simulation'),
         'stoponminbalance': document.getElementById('automated-stop-on-min-balance'),
         'red': document.getElementById('automated-red'),
-        'black': document.getElementById('automated-black')
+        'black': document.getElementById('automated-black'),
+        'statistics': {
+            'wins': document.getElementById('automated-statistics-wins'),
+            'loses': document.getElementById('automated-statistics-loses'),
+            'balance': document.getElementById('automated-statistics-balance')
+        }
     };
 
     this.updater = setInterval(function() { // Update every 5 - 10 seconds
@@ -146,6 +167,7 @@ function Automated() {
                 }
                 self.menu.basebet.value = self.base_bet;
                 self.menu.basebet.disabled = false;
+                self.starting_balance = self.balance;
             }
         }
     }, (Math.random() * 5 + 5).toFixed(3) * 1000);
@@ -235,8 +257,15 @@ Automated.prototype.updateHistory = function() {
     return this.history.length === 10;
 };
 
+Automated.prototype.updateStats = function() {
+    this.menu.statistics.wins.text = this.stats.wins;
+    this.menu.statistics.loses.text = this.stats.loses;
+    this.menu.statistics.balance.text = this.stats.balance;
+    return true;
+};
+
 Automated.prototype.updateAll = function() {
-    return this.updateBalance() && this.updateHistory();
+    return this.updateBalance() && this.updateHistory() && this.updateStats();
 };
 
 Automated.prototype.bet = function(amount, color) {
@@ -314,10 +343,13 @@ Automated.prototype.play = function() {
             } else if (self.last_color === self.history[self.history.length - 1]) {
                 self.last_result = 'win';
                 console.log('[Automated] Win!');
+                self.stats.wins += 1;
+                self.stats.balance += self.base_bet;
                 self.bet(self.base_bet);
             } else {
                 self.last_result = 'lose';
                 console.log('[Automated] Lose!');
+                self.stats.loses += 1;
                 self.bet(self.last_bet * 2);
             }
         }
@@ -350,6 +382,7 @@ Automated.prototype.stop = function() {
     clearInterval(this.game);
     this.game = null;
     this.running = false;
+    this.stats.balance = this.balance - this.starting_balance;
     this.menu.abort.disabled = true;
     this.menu.start.disabled = false;
     this.menu.stop.disabled = true;
@@ -360,6 +393,7 @@ Automated.prototype.abort = function() {
     this.game = null;
     this.running = false;
     this.last_result = 'abort';
+    this.stats.balance = this.balance - this.starting_balance;
     this.menu.abort.disabled = true;
     this.menu.start.disabled = false;
     this.menu.stop.disabled = true;

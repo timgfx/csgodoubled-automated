@@ -6,7 +6,11 @@
 ## [![Install](https://i.imgur.com/hKHfyWz.png)](https://raw.githubusercontent.com/Aareksio/csgodoubled-automated/master/csgodouble.com-automated.user.js)
 
 ## Requirements
-, requires [Greasemonkey](http://www.greasespot.net/) on Firefox and [Tampermonkey](http://tampermonkey.net/) on Chrome.
+Requires [Greasemonkey](http://www.greasespot.net/) on Firefox and [Tampermonkey](http://tampermonkey.net/) on Chrome.
+
+## Is it safe?
+
+It is, check the source - I tried to keep it clean and easy to understand.
 
 ## About
 
