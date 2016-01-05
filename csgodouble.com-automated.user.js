@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.14
+// @version         1.15
 // @author          Mole
 // @match           http://www.csgodouble.com/*
 // @run-at          document-end
@@ -377,6 +377,7 @@ Automated.prototype.start = function() {
 
 Automated.prototype.stop = function() {
     clearInterval(this.game);
+    this.updateAll();
     this.game = null;
     this.running = false;
     this.stats.balance = this.balance - this.starting_balance;
@@ -387,6 +388,7 @@ Automated.prototype.stop = function() {
 
 Automated.prototype.abort = function() {
     clearInterval(this.game);
+    this.updateAll();
     this.game = null;
     this.running = false;
     this.last_result = 'abort';
