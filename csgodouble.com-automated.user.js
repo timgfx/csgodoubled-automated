@@ -383,7 +383,7 @@ Automated.prototype.stop = function() {
     this.updateAll();
     this.game = null;
     this.running = false;
-    this.stats.balance = this.balance - this.starting_balance;
+    this.stats.balance = parseInt(this.balance) - parseInt(this.starting_balance);
     this.menu.abort.disabled = true;
     this.menu.start.disabled = false;
     this.menu.stop.disabled = true;
@@ -395,7 +395,7 @@ Automated.prototype.abort = function() {
     this.game = null;
     this.running = false;
     this.last_result = 'abort';
-    this.stats.balance = this.balance - this.starting_balance;
+    this.stats.balance = parseInt(this.balance) - parseInt(this.starting_balance);
     this.menu.abort.disabled = true;
     this.menu.start.disabled = false;
     this.menu.stop.disabled = true;
