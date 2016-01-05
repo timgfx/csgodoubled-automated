@@ -34,7 +34,7 @@ As you can see, it took `132071` coins just to get base `1` coin back.
 
 #### Why don't you code 'train protection' (or any different form of protection) then?
 
-If you ask such question, you don't even understand what is so-called `rainbow protection` and why it is bullshit (in other words - doesn't work).
+If you ask such question, you don't even understand what is so-called `train/rainbow/anything protection` and why it is bullshit (in other words - doesn't work).
 
 Let me show you another example, we are betting on `red`, here is current result history:
 ```
