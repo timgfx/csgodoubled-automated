@@ -42,7 +42,7 @@ red, red, black, red, green, black, black, black, black, black
 ```
 What should the script do in that situation - keep with red, switch to black?
 The answer is - whatever it does the winning chance is exactly the same.
-You should say something like - "Why?! You can see many streaks on the site, it is impossible!".
+You may say something like - "Why?! You can see many streaks on the site, it is impossible!".
 Well, it is possible, the site uses a system which chose `random` (at least very close to be random) number.
 
 Let's simplify it to a coin toss (which is pretty similar) - we have 50% chance for heads, 50% chance for tails*.
