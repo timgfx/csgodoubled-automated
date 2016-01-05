@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.03
+// @version         1.1
 // @author          Mole
 // @match           http://www.csgodouble.com/*
 // @run-at          document-end
@@ -14,6 +14,7 @@
 
 var debug = false;
 var simulation = false;
+var stop_on_min_balance = false;
 var base_bet = 5;
 var default_color = 'red';
 
@@ -65,14 +66,17 @@ function Automated() {
 
     this.debug = debug;
     this.simulation = simulation;
+    this.stop_on_min_balance = stop_on_min_balance;
 
     this.base_bet = base_bet;
     this.default_color = default_color;
     this.balance = 0;
     this.last_bet = 0;
+    this.min_balance = 0;
     this.last_color = null;
     this.last_result = null;
     this.history = [];
+    this.waiting_for_bet = false;
 
     var menu = document.createElement('div');
     menu.innerHTML = '' +
@@ -91,9 +95,20 @@ function Automated() {
                 '<button type="button" class="btn btn-default" id="automated-black" ' + (this.default_color === 'black' ? 'disabled' : '') + '>Black</button>' +
             '</div>' +
         '</div>' +
-        '<div class="input-group">' +
-            '<div class="input-group-addon">Base value</div>' +
-            '<input type="number" class="form-control" placeholder="Calculating suggested value..." id="automated-base-bet" disabled>' +
+        '<div class="form-group">' +
+            '<div class="input-group">' +
+                '<div class="input-group-addon">Base value</div>' +
+                '<input type="number" class="form-control" placeholder="Calculating suggested value..." id="automated-base-bet" disabled>' +
+            '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+            '<div class="input-group">' +
+                '<div class="input-group-addon">Keep balance above</div>' +
+                '<input type="number" class="form-control" value="0" id="automated-min-balance">' +
+            '</div>' +
+        '</div>' +
+        '<div class="checkbox">' +
+            '<label><input class="" id="automated-stop-on-min-balance" type="checkbox" ' + (this.stop_on_min_balance ? 'checked' : '') + '> Stop on minimal balance (if checked the bot will stop after getting close to minimal balance, otherwise it will continue starting on base)</label>' +
         '</div>' +
         '<div class="checkbox">' +
             '<label><input class="" id="automated-debug" type="checkbox" ' + (this.debug ? 'checked' : '') + '> Debug mode (More details in console)</label>' +
@@ -108,8 +123,10 @@ function Automated() {
         'stop': document.getElementById('automated-stop'),
         'abort': document.getElementById('automated-abort'),
         'basebet': document.getElementById('automated-base-bet'),
+        'minbalance': document.getElementById('automated-min-balance'),
         'debug': document.getElementById('automated-debug'),
         'simulation': document.getElementById('automated-simulation'),
+        'stoponminbalance': document.getElementById('automated-stop-on-min-balance'),
         'red': document.getElementById('automated-red'),
         'black': document.getElementById('automated-black')
     };
@@ -134,23 +151,14 @@ function Automated() {
     }, (Math.random() * 5 + 5).toFixed(3) * 1000);
 
     this.menu.start.onclick = function() {
-        self.menu.abort.disabled = false;
-        self.menu.stop.disabled = false;
-        self.menu.start.disabled = true;
         self.start();
     };
 
     this.menu.stop.onclick = function() {
-        self.menu.abort.disabled = true;
-        self.menu.start.disabled = false;
-        self.menu.stop.disabled = true;
         self.stop();
     };
 
     this.menu.abort.onclick = function() {
-        self.menu.abort.disabled = true;
-        self.menu.start.disabled = false;
-        self.menu.stop.disabled = true;
         self.abort();
     };
 
@@ -161,12 +169,23 @@ function Automated() {
         }
     };
 
+    this.menu.minbalance.onchange = function() {
+        var value = parseInt(self.menu.minbalance.value);
+        if (!isNaN(value)) {
+            self.min_balance = value;
+        }
+    };
+
     this.menu.debug.onchange = function() {
         self.debug = self.menu.debug.checked;
     };
 
     this.menu.simulation.onchange = function() {
         self.simulation = self.menu.simulation.checked;
+    };
+
+    this.menu.stoponminbalance.onchange = function() {
+        self.stop_on_min_balance = self.menu.stoponminbalance.checked;
     };
 
     this.menu.black.onclick = function() {
@@ -226,6 +245,19 @@ Automated.prototype.bet = function(amount, color) {
 
     if (['green', 'red', 'black'].indexOf(color) < 0 || amount > this.balance || amount === 0) {
         console.log('[Automated] Invalid bet!');
+        this.last_result = 'invalid bet';
+        this.stop();
+        this.waiting_for_bet = false;
+        return false;
+    }
+
+    if (this.balance - amount < this.min_balance) {
+        console.log('[Automated] Reached minimal balance!');
+        this.last_result = 'reached min balance';
+        if (this.stop_on_min_balance || this.balance - this.base_bet < this.min_balance) {
+            this.stop();
+        }
+        this.waiting_for_bet = false;
         return false;
     }
 
@@ -233,6 +265,9 @@ Automated.prototype.bet = function(amount, color) {
 
     setTimeout(function() {
         if (!bet_buttons[color].disabled) {
+            if (!self.running) {
+                return false;
+            }
             var old_balance = self.balance;
             console.log('[Automated] Betting ' + amount + ' on ' + color);
             if (!self.simulation) {
@@ -248,6 +283,8 @@ Automated.prototype.bet = function(amount, color) {
                                 if (self.debug) { console.log('[Automated] Bet accepted!'); }
                                 self.last_bet = amount;
                                 self.last_color = color;
+                                self.waiting_for_bet = false;
+                                return true;
                             }
                         }, 2500);
                     }
@@ -270,7 +307,8 @@ Automated.prototype.play = function() {
 
     this.game = setInterval(function() {
         var history = self.history;
-        if (self.updateAll() && !history.equals(self.history)) {
+        if (!self.waiting_for_bet && self.updateAll() && !history.equals(self.history)) {
+            self.waiting_for_bet = true;
             if (self.last_color === null) {
                 self.bet(self.base_bet);
             } else if (self.last_color === self.history[self.history.length - 1]) {
@@ -303,12 +341,18 @@ Automated.prototype.start = function() {
             }
         }
     }
+    this.menu.abort.disabled = false;
+    this.menu.stop.disabled = false;
+    this.menu.start.disabled = true;
 };
 
 Automated.prototype.stop = function() {
     clearInterval(this.game);
     this.game = null;
     this.running = false;
+    this.menu.abort.disabled = true;
+    this.menu.start.disabled = false;
+    this.menu.stop.disabled = true;
 };
 
 Automated.prototype.abort = function() {
@@ -316,6 +360,9 @@ Automated.prototype.abort = function() {
     this.game = null;
     this.running = false;
     this.last_result = 'abort';
+    this.menu.abort.disabled = true;
+    this.menu.start.disabled = false;
+    this.menu.stop.disabled = true;
 };
 
 var automated = new Automated();
