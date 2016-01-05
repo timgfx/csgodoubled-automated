@@ -81,7 +81,7 @@ function Automated() {
         '<div class="form-group">' +
             '<div class="btn-group">' +
                 '<button type="button" class="btn btn-success" id="automated-start" disabled>Start</button>' +
-                '<button type="button" class="btn btn-warning" id="automated-stop" disabled>Stop</button>' +
+                '<button type="button" class="btn btn-warning" id="automated-stop" disabled>Pause</button>' +
                 '<button type="button" class="btn btn-danger" id="automated-abort" disabled>Abort</button>' +
             '</div>' +
         '</div>' +
