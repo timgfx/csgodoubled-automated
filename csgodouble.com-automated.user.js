@@ -70,6 +70,7 @@ function Automated() {
 
     this.base_bet = base_bet;
     this.default_color = default_color;
+    this.old_base = 0;
     this.balance = 0;
     this.last_bet = 0;
     this.min_balance = 0;
@@ -343,7 +344,8 @@ Automated.prototype.play = function() {
                 self.last_result = 'win';
                 console.log('[Automated] Win!');
                 self.stats.wins += 1;
-                self.stats.balance += self.base_bet;
+                self.stats.balance += self.old_base;
+                self.old_base = self.base_bet;
                 self.bet(self.base_bet);
             } else {
                 self.last_result = 'lose';
@@ -359,6 +361,7 @@ Automated.prototype.play = function() {
 };
 
 Automated.prototype.start = function() {
+    this.old_base = this.base_bet;
     if (this.updateAll()) {
         if (this.last_result === 'lose') {
             this.running = true;
