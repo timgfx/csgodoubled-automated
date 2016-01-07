@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.17
+// @version         1.18
 // @author          Mole
 // @match           http://www.csgodouble.com/*
 // @run-at          document-end
@@ -70,6 +70,7 @@ function Automated() {
 
     this.base_bet = base_bet;
     this.default_color = default_color;
+    this.color = 'rainbow';
     this.old_base = 0;
     this.balance = 0;
     this.last_bet = 0;
@@ -100,8 +101,9 @@ function Automated() {
                 '</div>' +
                 '<div class="form-group">' +
                     '<div class="btn-group">' +
-                        '<button type="button" class="btn btn-default" id="automated-red" ' + (this.default_color === 'red' ? 'disabled' : '') + '>Red</button>' +
-                        '<button type="button" class="btn btn-default" id="automated-black" ' + (this.default_color === 'black' ? 'disabled' : '') + '>Black</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-red" ' + (this.color === 'red' ? 'disabled' : '') + '>Red</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-rainbow" ' + (this.color === 'rainbow' ? 'disabled' : '') + '>Rainbow</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-black" ' + (this.color === 'black' ? 'disabled' : '') + '>Black</button>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -146,6 +148,7 @@ function Automated() {
         'stoponminbalance': document.getElementById('automated-stop-on-min-balance'),
         'red': document.getElementById('automated-red'),
         'black': document.getElementById('automated-black'),
+        'rainbow': document.getElementById('automated-rainbow'),
         'statistics': {
             'wins': document.getElementById('automated-stats-wins'),
             'loses': document.getElementById('automated-stats-loses'),
@@ -212,15 +215,24 @@ function Automated() {
     };
 
     this.menu.black.onclick = function() {
+        self.menu.rainbow.disabled = true;
         self.menu.black.disabled = true;
         self.menu.red.disabled = false;
-        self.default_color = 'black';
+        self.color = 'black';
     };
 
     this.menu.red.onclick = function() {
+        self.menu.rainbow.disabled = true;
         self.menu.black.disabled = false;
         self.menu.red.disabled = true;
-        self.default_color = 'red';
+        self.color = 'red';
+    };
+
+    this.menu.rainbow.onclick = function() {
+        self.menu.rainbow.disabled = false;
+        self.menu.black.disabled = true;
+        self.menu.red.disabled = true;
+        self.color = 'rainbow';
     };
 }
 
@@ -271,7 +283,15 @@ Automated.prototype.updateAll = function() {
 
 Automated.prototype.bet = function(amount, color) {
     var self = this;
-    color = color || this.default_color;
+    color = color || this.color || this.default_color;
+
+    if (this.color = 'rainbow') {
+        if (this.last_color) {
+            color = (this.last_color === 'red' ? 'black' : 'red');
+        } else {
+            color = this.default_color;
+        }
+    }
 
     if (['green', 'red', 'black'].indexOf(color) < 0 || amount > this.balance || amount === 0) {
         console.log('[Automated] Invalid bet!');
@@ -298,6 +318,7 @@ Automated.prototype.bet = function(amount, color) {
             if (self.debug) { console.log('[Automated debug] Something went wrong (1)...'); }
             return false;
         }
+
         var old_balance = self.balance;
         console.log('[Automated] Betting ' + amount + ' on ' + color);
         if (!self.simulation) {

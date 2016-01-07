@@ -10,7 +10,14 @@ Requires [Greasemonkey](http://www.greasespot.net/) on Firefox and [Tampermonkey
 
 ## Is it safe?
 
-It is, check the source - I tried to keep it clean and easy to understand.
+Yes, you can use this script and don't worry about CSGODouble banning you - firstly, they don't really lose anything on you, secondary, checking for such activity is really troublesome.
+Oh, you asked about '/send' command? Check the source - I tried to keep it clean and easy to understand.
+
+## Why is 'Rainbow' set as the default?
+
+Because probability of getting long opposite rainbow streak is really unlikely - meaning it's the safest option. Check history for long rainbows if you don't belive!
+
+Therefore, it also means that you **should** expect to lose a bet when there's mono-color streak - you'll win every two rounds.
 
 ## About
 
