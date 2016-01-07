@@ -13,12 +13,6 @@ Requires [Greasemonkey](http://www.greasespot.net/) on Firefox and [Tampermonkey
 Yes, you can use this script and don't worry about CSGODouble banning you - firstly, they don't really lose anything on you, secondary, checking for such activity is really troublesome.
 Oh, you asked about '/send' command? Check the source - I tried to keep it clean and easy to understand.
 
-## Why is 'Rainbow' set as the default?
-
-Because probability of getting long opposite rainbow streak is really unlikely - meaning it's the safest option. Check history for long rainbows if you don't belive!
-
-Therefore, it also means that you **should** expect to lose a bet when there's mono-color streak - you'll win every two rounds.
-
 ## About
 
 The script uses martingale to bet your coins, this means that with every lose it doubles bet value, changing it back to base after win. That, in theory, means you always win base value.
@@ -92,5 +86,9 @@ As a human you wouldn't except more than X `reds` in a row, because you are coun
 
 In fact streaks like that are more natural for real randomness than you probably think, that is why people may call the site rigged, but it is not (I'm not defending the site, just the algorithm itself).
 
+
+#### Why is 'Rainbow' set as the default option?
+
+Because when you look on the history, you may think it's the safest option to go rainbow - the site don't pay me enough (in fact - they don't pay me at all :anguished:) to say it's true, but... Well, you may feel better!
 
 *[They say it is not, but we don't care, right?](https://www.youtube.com/watch?v=AYnJv68T3MM)
