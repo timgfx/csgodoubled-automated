@@ -1,7 +1,14 @@
 # CSGODouble.com Automated
 ### Userscript that bets for you! Automates betting on [CSGODouble](http://www.csgodouble.com/).
 
+Program interface
+
 ![Screenshot](http://i.imgur.com/q6rnsPH.png)
+![Screenshot](http://i.imgur.com/eSln22D.png)
+
+Full site dark mode
+
+![Screenshot](http://i.imgur.com/CGpzOB1.png)
 
 ## [![Install](https://i.imgur.com/hKHfyWz.png)](https://raw.githubusercontent.com/Aareksio/csgodoubled-automated/master/csgodouble.com-automated.user.js)
 
