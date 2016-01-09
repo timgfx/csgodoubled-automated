@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.21
+// @version         1.22
 // @author          Mole
 // @match           http://www.csgodouble.com/*
 // @run-at          document-end
@@ -92,50 +92,50 @@ function Automated() {
     var menu = document.createElement('div');
     menu.innerHTML = '' +
         '<div class="row">' +
-            '<div class="col-lg-9">' +
-                '<h2>CSGODouble.com Automated <small>by Mole</small> <i id="automated-theme-switch" class="fa fa-lightbulb-o" style="cursor: pointer;"></i></h2>' +
-                '<div class="form-group">' +
-                    '<div class="btn-group">' +
-                        '<button type="button" class="btn btn-success" id="automated-start" disabled>Start</button>' +
-                        '<button type="button" class="btn btn-warning" id="automated-stop" disabled>Pause</button>' +
-                        '<button type="button" class="btn btn-danger" id="automated-abort" disabled>Abort</button>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="form-group">' +
-                    '<div class="btn-group">' +
-                        '<button type="button" class="btn btn-default" id="automated-red" ' + (this.color === 'red' ? 'disabled' : '') + '>Red</button>' +
-                        '<button type="button" class="btn btn-default" id="automated-rainbow" ' + (this.color === 'rainbow' ? 'disabled' : '') + '>Rainbow</button>' +
-                        '<button type="button" class="btn btn-default" id="automated-black" ' + (this.color === 'black' ? 'disabled' : '') + '>Black</button>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="col-lg-3">' +
-                '<h3>Statistics</h3>' +
-                '<p><b>Wins:</b> <span id="automated-stats-wins">' + this.stats.wins + '</span></p>' +
-                '<p><b>Loses:</b> <span id="automated-stats-loses">' + this.stats.loses + '</span></p>' +
-                '<p><b>Balance:</b> <span id="automated-stats-balance">' + this.stats.balance + '</span></p>' +
-            '</div>' +
+        '<div class="col-lg-9">' +
+        '<h2>CSGODouble.com Automated <small>by Mole</small> <i id="automated-theme-switch" class="fa fa-lightbulb-o" style="cursor: pointer;"></i></h2>' +
+        '<div class="form-group">' +
+        '<div class="btn-group">' +
+        '<button type="button" class="btn btn-success" id="automated-start" disabled>Start</button>' +
+        '<button type="button" class="btn btn-warning" id="automated-stop" disabled>Pause</button>' +
+        '<button type="button" class="btn btn-danger" id="automated-abort" disabled>Abort</button>' +
+        '</div>' +
         '</div>' +
         '<div class="form-group">' +
-            '<div class="input-group">' +
-                '<div class="input-group-addon">Base value</div>' +
-                '<input type="number" class="form-control" placeholder="Calculating suggested value..." id="automated-base-bet" disabled>' +
-            '</div>' +
+        '<div class="btn-group">' +
+        '<button type="button" class="btn btn-default" id="automated-red" ' + (this.color === 'red' ? 'disabled' : '') + '>Red</button>' +
+        '<button type="button" class="btn btn-default" id="automated-rainbow" ' + (this.color === 'rainbow' ? 'disabled' : '') + '>Rainbow</button>' +
+        '<button type="button" class="btn btn-default" id="automated-black" ' + (this.color === 'black' ? 'disabled' : '') + '>Black</button>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="col-lg-3">' +
+        '<h3>Statistics</h3>' +
+        '<p><b>Wins:</b> <span id="automated-stats-wins">' + this.stats.wins + '</span></p>' +
+        '<p><b>Loses:</b> <span id="automated-stats-loses">' + this.stats.loses + '</span></p>' +
+        '<p><b>Balance:</b> <span id="automated-stats-balance">' + this.stats.balance + '</span></p>' +
+        '</div>' +
         '</div>' +
         '<div class="form-group">' +
-            '<div class="input-group">' +
-                '<div class="input-group-addon">Keep balance above</div>' +
-                '<input type="number" class="form-control" value="0" id="automated-min-balance">' +
-            '</div>' +
+        '<div class="input-group">' +
+        '<div class="input-group-addon">Base value</div>' +
+        '<input type="number" class="form-control" placeholder="Calculating suggested value..." id="automated-base-bet" disabled>' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<div class="input-group">' +
+        '<div class="input-group-addon">Keep balance above</div>' +
+        '<input type="number" class="form-control" value="0" id="automated-min-balance">' +
+        '</div>' +
         '</div>' +
         '<div class="checkbox">' +
-            '<label><input class="" id="automated-stop-on-min-balance" type="checkbox" ' + (this.stop_on_min_balance ? 'checked' : '') + '> Stop on minimal balance (If checked the bot will stop after getting close to minimal balance, otherwise it will continue starting on base)</label>' +
+        '<label><input class="" id="automated-stop-on-min-balance" type="checkbox" ' + (this.stop_on_min_balance ? 'checked' : '') + '> Stop on minimal balance (If checked the bot will stop after getting close to minimal balance, otherwise it will continue starting on base)</label>' +
         '</div>' +
         '<div class="checkbox">' +
-            '<label><input class="" id="automated-debug" type="checkbox" ' + (this.debug ? 'checked' : '') + '> Debug mode (More details will be displayed in browser console)</label>' +
+        '<label><input class="" id="automated-debug" type="checkbox" ' + (this.debug ? 'checked' : '') + '> Debug mode</label>' +
         '</div>' +
         '<div class="checkbox">' +
-            '<label><input id="automated-simulation" type="checkbox" ' + (this.simulation ? 'checked' : '') + '> Simulation mode (The value changes depending on rolls, but no coins are actually placed)</label>' +
+        '<label><input id="automated-simulation" type="checkbox" ' + (this.simulation ? 'checked' : '') + '> Simulation mode (The value changes depending on rolls, but no coins are actually placed)</label>' +
         '</div>';
     document.getElementsByClassName('well')[1].appendChild(menu);
 
@@ -159,7 +159,7 @@ function Automated() {
         'theme': document.getElementById('automated-theme-switch')
     };
 
-    this.updater = setInterval(function() { // Update every 5 - 10 seconds
+    this.updater = setInterval(function () { // Update every 5 - 10 seconds
         if (!self.running) {
             if (self.updateAll() && self.menu.stop.disabled && self.menu.start.disabled) {
                 self.menu.start.disabled = false;
@@ -177,89 +177,103 @@ function Automated() {
                 self.starting_balance = self.balance;
             }
         }
-    }, (Math.random() * 5 + 5).toFixed(3) * 1000);
+    }, 2 * 1000);
 
-    if (theme === 'dark') { this.darkMode(); }
+    if (theme === 'dark') {
+        this.darkMode();
+    }
 
-    this.menu.start.onclick = function() {
+    this.menu.start.onclick = function () {
         self.start();
     };
 
-    this.menu.stop.onclick = function() {
+    this.menu.stop.onclick = function () {
         self.stop();
     };
 
-    this.menu.abort.onclick = function() {
-        self.abort();
+    this.menu.abort.onclick = function () {
+        self.stop(true);
     };
 
-    this.menu.basebet.onchange = function() {
+    this.menu.basebet.onchange = function () {
         var value = parseInt(self.menu.basebet.value);
         if (!isNaN(value)) {
             self.base_bet = value;
         }
     };
 
-    this.menu.minbalance.onchange = function() {
+    this.menu.minbalance.onchange = function () {
         var value = parseInt(self.menu.minbalance.value);
         if (!isNaN(value)) {
             self.min_balance = value;
         }
     };
 
-    this.menu.debug.onchange = function() {
+    this.menu.debug.onchange = function () {
         self.debug = self.menu.debug.checked;
     };
 
-    this.menu.simulation.onchange = function() {
+    this.menu.simulation.onchange = function () {
         self.simulation = self.menu.simulation.checked;
     };
 
-    this.menu.stoponminbalance.onchange = function() {
+    this.menu.stoponminbalance.onchange = function () {
         self.stop_on_min_balance = self.menu.stoponminbalance.checked;
     };
 
-    this.menu.black.onclick = function() {
+    this.menu.black.onclick = function () {
         self.menu.rainbow.disabled = false;
         self.menu.black.disabled = true;
         self.menu.red.disabled = false;
         self.color = 'black';
+        self.log('Current mode: black');
     };
 
-    this.menu.red.onclick = function() {
+    this.menu.red.onclick = function () {
         self.menu.rainbow.disabled = false;
         self.menu.black.disabled = false;
         self.menu.red.disabled = true;
         self.color = 'red';
+        self.log('Current mode: red');
     };
 
-    this.menu.rainbow.onclick = function() {
+    this.menu.rainbow.onclick = function () {
         self.menu.rainbow.disabled = true;
         self.menu.black.disabled = false;
         self.menu.red.disabled = false;
         self.color = 'rainbow';
+        self.log('Current mode: rainbow');
     };
 
-    this.menu.theme.onclick = function() {
+    this.menu.theme.onclick = function () {
         if (self.theme === 'dark') {
             self.lightMode();
             self.theme = 'light';
+            self.log('Switching to light theme...');
         } else {
             self.darkMode();
             self.theme = 'dark';
+            self.log('Switching to dark theme...');
         }
-    }
+    };
+
+    setInterval(function() {
+        if(!WS) {
+            self.log('Reconnecting...');
+            connect();
+        }
+    }, 2500);
 }
 
 Automated.prototype.updateBalance = function() {
     this.balance = parseInt(balance.textContent);
 
     if (isNaN(this.balance)) {
-        console.log('[Automated] Error getting current balance!');
+        this.log('Error getting current balance!');
         return false;
     }
 
-    if (this.debug) { console.log('[Automated] Balance updated: ' + this.balance); }
+    if (this.debug) { this.logdebug('Balance updated: ' + this.balance); }
     return true;
 };
 
@@ -281,7 +295,7 @@ Automated.prototype.updateHistory = function() {
         }
     }
 
-    if (this.debug) { console.log('[Automated] History updated: ' + this.history.map(function(value) { return value; }).join(', ')); }
+    if (this.debug) { this.logdebug('History updated: ' + this.history.map(function(value) { return value; }).join(', ')); }
     return this.history.length === 10;
 };
 
@@ -308,16 +322,16 @@ Automated.prototype.bet = function(amount, color) {
         }
     }
 
-    if (['green', 'red', 'black'].indexOf(color) < 0 || amount > this.balance || amount === 0) {
-        console.log('[Automated] Invalid bet!');
+    if (['green', 'red', 'black'].indexOf(color) < 0 || amount > this.balance || amount <= 0) {
+        this.log('Invalid bet!');
         this.last_result = 'invalid bet';
-        this.stop();
         this.waiting_for_bet = false;
+        this.stop();
         return false;
     }
 
     if (this.balance - amount < this.min_balance) {
-        console.log('[Automated] Reached minimal balance!');
+        this.log('Reached minimal balance!');
         this.last_result = 'reached min balance';
         if (this.stop_on_min_balance || this.balance - this.base_bet < this.min_balance) {
             this.stop();
@@ -329,13 +343,8 @@ Automated.prototype.bet = function(amount, color) {
     bet_input.value = amount;
 
     if (!bet_buttons[color].disabled) {
-        if (!self.running) {
-            if (self.debug) { console.log('[Automated debug] Something went wrong (1)...'); }
-            return false;
-        }
-
         var old_balance = self.balance;
-        console.log('[Automated] Betting ' + amount + ' on ' + color);
+        this.log('Betting ' + amount + ' on ' + color);
         if (!self.simulation) {
             bet_buttons[color].click();
             var checker = setInterval(function() {
@@ -343,10 +352,11 @@ Automated.prototype.bet = function(amount, color) {
                     clearInterval(checker);
                     setTimeout(function() {
                         if (self.updateBalance() && self.balance === old_balance) {
-                            console.log('[Automated] Bet rejected, retrying...');
+                            if (!self.game) { return false; }
+                            self.log('Bet rejected, retrying...');
                             self.bet(amount, color);
                         } else {
-                            if (self.debug) { console.log('[Automated] Bet accepted!'); }
+                            if (self.debug) { self.logdebug('Bet accepted!'); }
                             self.last_bet = amount;
                             self.last_color = color;
                             self.waiting_for_bet = false;
@@ -362,7 +372,8 @@ Automated.prototype.bet = function(amount, color) {
             return true;
         }
     } else {
-        console.log('[Automated] Button disabled, retrying...');
+        if (!self.game) { return false; }
+        self.log('Button disabled, retrying...');
         setTimeout(function() { self.bet(amount, color) }, (Math.random() * 3 + 2).toFixed(3) * 1000);
     }
 };
@@ -371,7 +382,7 @@ Automated.prototype.play = function() {
     var self = this;
 
     if (this.game !== null) {
-        if (this.debug) { console.log('[Automated] Tried to reinitialize running game!'); }
+        if (this.debug) { this.logdebug('Tried to reinitialize running game!'); }
         return false;
     }
 
@@ -383,20 +394,19 @@ Automated.prototype.play = function() {
                 self.bet(self.base_bet);
             } else if (self.last_color === self.history[self.history.length - 1]) {
                 self.last_result = 'win';
-                console.log('[Automated] Win!');
+                self.log('Win!');
                 self.stats.wins += 1;
                 self.stats.balance += self.old_base;
                 self.old_base = self.base_bet;
                 self.bet(self.base_bet);
             } else {
                 self.last_result = 'lose';
-                console.log('[Automated] Lose!');
+                self.log('Lose!');
                 self.stats.loses += 1;
                 self.bet(self.last_bet * 2);
             }
         }
-
-    }, (Math.random() * 5 + 5).toFixed(3) * 1000);
+    }, 2 * 1000);
 
     return true;
 };
@@ -419,27 +429,18 @@ Automated.prototype.start = function() {
     this.menu.start.disabled = true;
 };
 
-Automated.prototype.stop = function() {
-    clearInterval(this.game);
-    this.updateAll();
-    this.game = null;
-    this.running = false;
+Automated.prototype.stop = function(abort) {
+    var self = this;
+    if (abort) { this.last_result = 'abort'; }
     this.stats.balance = parseInt(this.balance) - parseInt(this.starting_balance);
-    this.menu.abort.disabled = true;
-    this.menu.start.disabled = false;
-    this.menu.stop.disabled = true;
-};
-
-Automated.prototype.abort = function() {
-    clearInterval(this.game);
-    this.updateAll();
-    this.game = null;
-    this.running = false;
-    this.last_result = 'abort';
-    this.stats.balance = parseInt(this.balance) - parseInt(this.starting_balance);
-    this.menu.abort.disabled = true;
-    this.menu.start.disabled = false;
-    this.menu.stop.disabled = true;
+    setTimeout(function() {
+        clearInterval(self.game);
+        self.game = null;
+        self.running = false;
+        self.menu.abort.disabled = true;
+        self.menu.stop.disabled = true;
+        self.menu.start.disabled = false;
+    }, 1); // Next tick
 };
 
 Automated.prototype.darkMode = function() {
@@ -462,6 +463,14 @@ Automated.prototype.darkMode = function() {
 Automated.prototype.lightMode = function() {
     var style = document.getElementById('automated-style');
     style.innerHTML = '';
+};
+
+Automated.prototype.log = function(message) {
+    chat('alert', '[Automated] ' + message);
+};
+
+Automated.prototype.logdebug = function(message) {
+    chat('italic', '[Automated] ' + message);
 };
 
 var automated = new Automated();
