@@ -355,6 +355,11 @@ Automated.prototype.bet = function(amount, color) {
                     }, 2500);
                 }
             }, 1000);
+        } else {
+            self.last_bet = amount;
+            self.last_color = color;
+            self.waiting_for_bet = false;
+            return true;
         }
     } else {
         console.log('[Automated] Button disabled, retrying...');
