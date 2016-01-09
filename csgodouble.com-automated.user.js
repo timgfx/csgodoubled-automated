@@ -92,50 +92,50 @@ function Automated() {
     var menu = document.createElement('div');
     menu.innerHTML = '' +
         '<div class="row">' +
-        '<div class="col-lg-9">' +
-        '<h2>CSGODouble.com Automated <small>by Mole</small> <i id="automated-theme-switch" class="fa fa-lightbulb-o" style="cursor: pointer;"></i></h2>' +
-        '<div class="form-group">' +
-        '<div class="btn-group">' +
-        '<button type="button" class="btn btn-success" id="automated-start" disabled>Start</button>' +
-        '<button type="button" class="btn btn-warning" id="automated-stop" disabled>Pause</button>' +
-        '<button type="button" class="btn btn-danger" id="automated-abort" disabled>Abort</button>' +
-        '</div>' +
-        '</div>' +
-        '<div class="form-group">' +
-        '<div class="btn-group">' +
-        '<button type="button" class="btn btn-default" id="automated-red" ' + (this.color === 'red' ? 'disabled' : '') + '>Red</button>' +
-        '<button type="button" class="btn btn-default" id="automated-rainbow" ' + (this.color === 'rainbow' ? 'disabled' : '') + '>Rainbow</button>' +
-        '<button type="button" class="btn btn-default" id="automated-black" ' + (this.color === 'black' ? 'disabled' : '') + '>Black</button>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '<div class="col-lg-3">' +
-        '<h3>Statistics</h3>' +
-        '<p><b>Wins:</b> <span id="automated-stats-wins">' + this.stats.wins + '</span></p>' +
-        '<p><b>Loses:</b> <span id="automated-stats-loses">' + this.stats.loses + '</span></p>' +
-        '<p><b>Balance:</b> <span id="automated-stats-balance">' + this.stats.balance + '</span></p>' +
-        '</div>' +
-        '</div>' +
-        '<div class="form-group">' +
-        '<div class="input-group">' +
-        '<div class="input-group-addon">Base value</div>' +
-        '<input type="number" class="form-control" placeholder="Calculating suggested value..." id="automated-base-bet" disabled>' +
-        '</div>' +
+            '<div class="col-lg-9">' +
+                '<h2>CSGODouble.com Automated <small>by Mole</small> <i id="automated-theme-switch" class="fa fa-lightbulb-o" style="cursor: pointer;"></i></h2>' +
+                '<div class="form-group">' +
+                    '<div class="btn-group">' +
+                        '<button type="button" class="btn btn-success" id="automated-start" disabled>Start</button>' +
+                        '<button type="button" class="btn btn-warning" id="automated-stop" disabled>Pause</button>' +
+                        '<button type="button" class="btn btn-danger" id="automated-abort" disabled>Abort</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                    '<div class="btn-group">' +
+                        '<button type="button" class="btn btn-default" id="automated-red" ' + (this.color === 'red' ? 'disabled' : '') + '>Red</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-rainbow" ' + (this.color === 'rainbow' ? 'disabled' : '') + '>Rainbow</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-black" ' + (this.color === 'black' ? 'disabled' : '') + '>Black</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-lg-3">' +
+                '<h3>Statistics</h3>' +
+                '<p><b>Wins:</b> <span id="automated-stats-wins">' + this.stats.wins + '</span></p>' +
+                '<p><b>Loses:</b> <span id="automated-stats-loses">' + this.stats.loses + '</span></p>' +
+                '<p><b>Balance:</b> <span id="automated-stats-balance">' + this.stats.balance + '</span></p>' +
+            '</div>' +
         '</div>' +
         '<div class="form-group">' +
-        '<div class="input-group">' +
-        '<div class="input-group-addon">Keep balance above</div>' +
-        '<input type="number" class="form-control" value="0" id="automated-min-balance">' +
-        '</div>' +
+            '<div class="input-group">' +
+                '<div class="input-group-addon">Base value</div>' +
+                    '<input type="number" class="form-control" placeholder="Calculating suggested value..." id="automated-base-bet" disabled>' +
+                '</div>' +
+            '</div>' +
+            '<div class="form-group">' +
+            '<div class="input-group">' +
+                '<div class="input-group-addon">Keep balance above</div>' +
+                    '<input type="number" class="form-control" value="0" id="automated-min-balance">' +
+                '</div>' +
+            '</div>' +
+        '<div class="checkbox">' +
+            '<label><input class="" id="automated-stop-on-min-balance" type="checkbox" ' + (this.stop_on_min_balance ? 'checked' : '') + '> Stop on minimal balance (If checked the bot will stop after getting close to minimal balance, otherwise it will continue starting on base)</label>' +
         '</div>' +
         '<div class="checkbox">' +
-        '<label><input class="" id="automated-stop-on-min-balance" type="checkbox" ' + (this.stop_on_min_balance ? 'checked' : '') + '> Stop on minimal balance (If checked the bot will stop after getting close to minimal balance, otherwise it will continue starting on base)</label>' +
+            '<label><input class="" id="automated-debug" type="checkbox" ' + (this.debug ? 'checked' : '') + '> Debug mode</label>' +
         '</div>' +
         '<div class="checkbox">' +
-        '<label><input class="" id="automated-debug" type="checkbox" ' + (this.debug ? 'checked' : '') + '> Debug mode</label>' +
-        '</div>' +
-        '<div class="checkbox">' +
-        '<label><input id="automated-simulation" type="checkbox" ' + (this.simulation ? 'checked' : '') + '> Simulation mode (The value changes depending on rolls, but no coins are actually placed)</label>' +
+            '<label><input id="automated-simulation" type="checkbox" ' + (this.simulation ? 'checked' : '') + '> Simulation mode (The value changes depending on rolls, but no coins are actually placed)</label>' +
         '</div>';
     document.getElementsByClassName('well')[1].appendChild(menu);
 
