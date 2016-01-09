@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.2
+// @version         1.21
 // @author          Mole
 // @match           http://www.csgodouble.com/*
 // @run-at          document-end
@@ -300,7 +300,7 @@ Automated.prototype.bet = function(amount, color) {
     var self = this;
     color = color || this.color || this.default_color;
 
-    if (this.color = 'rainbow') {
+    if (color === 'rainbow') {
         if (this.last_color) {
             color = (this.last_color === 'red' ? 'black' : 'red');
         } else {
