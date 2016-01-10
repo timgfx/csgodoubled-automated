@@ -3,7 +3,7 @@
 
 Program interface
 
-![Screenshot](http://i.imgur.com/q6rnsPH.png)
+![Screenshot](http://i.imgur.com/JyhVpWt.png)
 ![Screenshot](http://i.imgur.com/eSln22D.png)
 
 Full site dark mode
