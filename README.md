@@ -103,6 +103,10 @@ Because when you look on the history, you may think it's the safest option to go
 
 ## Changelog
 
+1.24:
+
+- Great martingale
+
 1.23:
 
 - Base bet calculation based on given failsafe value
