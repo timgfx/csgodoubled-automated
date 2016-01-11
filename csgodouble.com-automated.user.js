@@ -2,9 +2,10 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.22
+// @version         1.23
 // @author          Mole
-// @match           http://www.csgodouble.com/*
+// @match           http://www.csgodouble.com/
+// @match           http://www.csgodouble.com/index.php
 // @run-at          document-end
 // @grant           none
 // ==/UserScript==
@@ -15,7 +16,9 @@
 var debug = false;
 var simulation = false;
 var stop_on_min_balance = false;
+var calculate_safe_bet = false;
 var base_bet = 5;
+var safe_bet_amount = 6;
 var default_color = 'red';
 var theme = 'dark';
 
@@ -27,16 +30,14 @@ var colors = {
 
 var balance = document.getElementById('balance');
 var roll_history = document.getElementById('past');
-
 var bet_input = document.getElementById('betAmount');
-
 var bet_buttons = {
     'green': document.getElementById('panel0-0').childNodes[1].childNodes[1],
     'red': document.getElementById('panel1-7').childNodes[1].childNodes[1],
     'black': document.getElementById('panel8-14').childNodes[1].childNodes[1]
 };
 
-Array.prototype.equals = function (array) {
+Array.prototype.equals = function(array) {
     if (!array) {
         return false;
     }
@@ -68,9 +69,11 @@ function Automated() {
     this.debug = debug;
     this.simulation = simulation;
     this.stop_on_min_balance = stop_on_min_balance;
+	this.calculate_safe_bet = calculate_safe_bet;
 
     this.base_bet = base_bet;
     this.default_color = default_color;
+	this.safe_bet_amount = safe_bet_amount;
     this.color = 'rainbow';
     this.old_base = 0;
     this.balance = 0;
@@ -128,14 +131,23 @@ function Automated() {
                     '<input type="number" class="form-control" value="0" id="automated-min-balance">' +
                 '</div>' +
             '</div>' +
+            '<div class="form-group">' +
+            '<div class="input-group">' +
+                '<div class="input-group-addon">Failsafe value</div>' +
+                    '<input type="number" class="form-control" value="' + this.safe_bet_amount + '" id="automated-safe-bet-amount"' + (!this.calculate_safe_bet ? ' disabled' : '') + '>' +
+                '</div>' +
+            '</div>' +
         '<div class="checkbox">' +
             '<label><input class="" id="automated-stop-on-min-balance" type="checkbox" ' + (this.stop_on_min_balance ? 'checked' : '') + '> Stop on minimal balance (If checked the bot will stop after getting close to minimal balance, otherwise it will continue starting on base)</label>' +
+        '</div>' +
+        '<div class="checkbox">' +
+            '<label><input class="" id="automated-calculate-safe-bet" type="checkbox" ' + (this.calculate_safe_bet ? 'checked' : '') + '> Calculate base bet from given "Failsafe value", the formula is [base bet] = floor( [balance] / 2 ^ ( [failsafe value] + 1) ) </label>' +
         '</div>' +
         '<div class="checkbox">' +
             '<label><input class="" id="automated-debug" type="checkbox" ' + (this.debug ? 'checked' : '') + '> Debug mode</label>' +
         '</div>' +
         '<div class="checkbox">' +
-            '<label><input id="automated-simulation" type="checkbox" ' + (this.simulation ? 'checked' : '') + '> Simulation mode (The value changes depending on rolls, but no coins are actually placed)</label>' +
+            '<label class="text-muted"><input id="automated-simulation" type="checkbox" ' + (this.simulation ? 'checked' : '') + ' disabled> Simulation mode</label>' +
         '</div>';
     document.getElementsByClassName('well')[1].appendChild(menu);
 
@@ -156,25 +168,26 @@ function Automated() {
             'loses': document.getElementById('automated-stats-loses'),
             'balance': document.getElementById('automated-stats-balance')
         },
-        'theme': document.getElementById('automated-theme-switch')
+        'theme': document.getElementById('automated-theme-switch'),
+		'safebetamount': document.getElementById('automated-safe-bet-amount'),
+		'calculatesafebet': document.getElementById('automated-calculate-safe-bet')
     };
 
-    this.updater = setInterval(function () { // Update every 5 - 10 seconds
+    this.updater = setInterval(function() { // Update every 2 seconds
         if (!self.running) {
-            if (self.updateAll() && self.menu.stop.disabled && self.menu.start.disabled) {
-                self.menu.start.disabled = false;
-                if (self.balance > 1000000) {
-                    self.base_bet = Math.floor(self.balance / Math.pow(2, 12));
-                } else if (self.balance > 100000) {
-                    self.base_bet = Math.floor(self.balance / Math.pow(2, 11));
-                } else if (self.balance > 10000) {
-                    self.base_bet = Math.floor(self.balance / Math.pow(2, 9));
-                } else {
-                    self.base_bet = Math.floor(self.balance / Math.pow(2, 6));
-                }
-                self.menu.basebet.value = self.base_bet;
-                self.menu.basebet.disabled = false;
-                self.starting_balance = self.balance;
+            if (self.updateAll()) {
+				if (self.calculatesafebet) {
+					self.base_bet = Math.floor(self.balance / Math.pow(2, self.safe_bet_amount + 1));
+					self.menu.basebet.value = self.base_bet;
+				}
+				
+				if (self.menu.stop.disabled && self.menu.start.disabled) {
+					self.menu.start.disabled = false;
+                    self.base_bet = Math.floor(self.balance / Math.pow(2, self.safe_bet_amount + 1));
+                    self.menu.basebet.value = self.base_bet;
+					self.menu.basebet.disabled = self.menu.calculatesafebet.checked;
+					self.starting_balance = self.balance;
+				}
             }
         }
     }, 2 * 1000);
@@ -183,45 +196,51 @@ function Automated() {
         this.darkMode();
     }
 
-    this.menu.start.onclick = function () {
+    this.menu.start.onclick = function() {
         self.start();
     };
 
-    this.menu.stop.onclick = function () {
+    this.menu.stop.onclick = function() {
         self.stop();
     };
 
-    this.menu.abort.onclick = function () {
+    this.menu.abort.onclick = function() {
         self.stop(true);
     };
 
-    this.menu.basebet.onchange = function () {
+    this.menu.basebet.onchange = function() {
         var value = parseInt(self.menu.basebet.value);
         if (!isNaN(value)) {
             self.base_bet = value;
         }
     };
 
-    this.menu.minbalance.onchange = function () {
+    this.menu.minbalance.onchange = function() {
         var value = parseInt(self.menu.minbalance.value);
         if (!isNaN(value)) {
             self.min_balance = value;
         }
     };
 
-    this.menu.debug.onchange = function () {
+    this.menu.debug.onchange = function() {
         self.debug = self.menu.debug.checked;
     };
 
-    this.menu.simulation.onchange = function () {
+    this.menu.simulation.onchange = function() {
         self.simulation = self.menu.simulation.checked;
     };
 
-    this.menu.stoponminbalance.onchange = function () {
+    this.menu.stoponminbalance.onchange = function() {
         self.stop_on_min_balance = self.menu.stoponminbalance.checked;
     };
+	
+	this.menu.calculatesafebet.onchange = function() {
+		self.calculate_safe_bet = self.menu.calculatesafebet.checked;
+		self.menu.basebet.disabled = self.menu.calculatesafebet.checked;
+		self.menu.safebetamount.disabled = !self.menu.calculatesafebet.checked;
+	};
 
-    this.menu.black.onclick = function () {
+    this.menu.black.onclick = function() {
         self.menu.rainbow.disabled = false;
         self.menu.black.disabled = true;
         self.menu.red.disabled = false;
@@ -229,7 +248,7 @@ function Automated() {
         self.log('Current mode: black');
     };
 
-    this.menu.red.onclick = function () {
+    this.menu.red.onclick = function() {
         self.menu.rainbow.disabled = false;
         self.menu.black.disabled = false;
         self.menu.red.disabled = true;
@@ -237,7 +256,7 @@ function Automated() {
         self.log('Current mode: red');
     };
 
-    this.menu.rainbow.onclick = function () {
+    this.menu.rainbow.onclick = function() {
         self.menu.rainbow.disabled = true;
         self.menu.black.disabled = false;
         self.menu.red.disabled = false;
@@ -245,7 +264,7 @@ function Automated() {
         self.log('Current mode: rainbow');
     };
 
-    this.menu.theme.onclick = function () {
+    this.menu.theme.onclick = function() {
         if (self.theme === 'dark') {
             self.lightMode();
             self.theme = 'light';
@@ -393,6 +412,10 @@ Automated.prototype.play = function() {
             if (self.last_color === null) {
                 self.bet(self.base_bet);
             } else if (self.last_color === self.history[self.history.length - 1]) {
+				if (self.calculatesafebet) {
+                    self.base_bet = Math.floor(self.balance / Math.pow(2, self.safe_bet_amount + 1));
+					self.menu.safebetamount.value = self.base_bet;
+				}
                 self.last_result = 'win';
                 self.log('Win!');
                 self.stats.wins += 1;
