@@ -99,3 +99,40 @@ In fact streaks like that are more natural for real randomness than you probably
 Because when you look on the history, you may think it's the safest option to go rainbow - the site don't pay me enough (in fact - they don't pay me at all :anguished:) to say it's true, but... Well, you may feel better!
 
 *[They say it is not, but we don't care, right?](https://www.youtube.com/watch?v=AYnJv68T3MM)
+
+
+## Changelog
+
+1.23:
+
+- Base bet calculation based on given failsafe value
+
+
+1.22:
+
+- Auto reconnect (without reloading the page!);
+- Switched to chat notifications - no longer need to open the console;
+- Fixed an issue when the script bets twice right after starting;
+- Fixed an issue when changing bet color;
+- Fixed intervals not being cleared after stopping (backend change);
+- Removed an option to bet negative values;
+
+
+1.2:
+
+- Dark theme
+
+
+1.18:
+
+- Fixed wrong balance showed in statistics after stopping/aborting betting;
+- Added 3rd option (called '[Rainbow](https://github.com/Aareksio/csgodoubled-automated#why-is-rainbow-set-as-the-default-option)') to color settings - I hope you know what it does;
+- Better mobile support (didn't I mention that it works on mobile devices as well?);
+
+
+1.16:
+
+- Bet statistics;
+- It stops at given balance limit, in other words not allow you to lose everything, depending on settings it may stop betting at all or start at base value;
+- Automatically calculates safe base value for you (I still recommend calculating it on your own - check [README](https://github.com/Aareksio/csgodoubled-automated#why-would-i-play-the-game-if-i-can-lose-everything) for details);
+- Bugfixes
