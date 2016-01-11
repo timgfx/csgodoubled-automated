@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.23
+// @version         1.24
 // @author          Mole
 // @match           http://www.csgodouble.com/
 // @match           http://www.csgodouble.com/index.php
@@ -20,6 +20,7 @@ var calculate_safe_bet = false;
 var base_bet = 5;
 var safe_bet_amount = 6;
 var default_color = 'red';
+var default_method = 'martingale';
 var theme = 'dark';
 
 var colors = {
@@ -73,7 +74,10 @@ function Automated() {
 
     this.base_bet = base_bet;
     this.default_color = default_color;
+    this.default_method = default_method;
 	this.safe_bet_amount = safe_bet_amount;
+    this.method = this.default_method;
+    this.old_method = '';
     this.color = 'rainbow';
     this.old_base = 0;
     this.balance = 0;
@@ -96,7 +100,7 @@ function Automated() {
     menu.innerHTML = '' +
         '<div class="row">' +
             '<div class="col-lg-9">' +
-                '<h2>CSGODouble.com Automated <small>by Mole</small> <i id="automated-theme-switch" class="fa fa-lightbulb-o" style="cursor: pointer;"></i></h2>' +
+                '<h2>CSGODouble.com Automated <small>by Mole (76561198042302314)</small> <i id="automated-theme-switch" class="fa fa-lightbulb-o" style="cursor: pointer;"></i></h2>' +
                 '<div class="form-group">' +
                     '<div class="btn-group">' +
                         '<button type="button" class="btn btn-success" id="automated-start" disabled>Start</button>' +
@@ -109,6 +113,12 @@ function Automated() {
                         '<button type="button" class="btn btn-default" id="automated-red" ' + (this.color === 'red' ? 'disabled' : '') + '>Red</button>' +
                         '<button type="button" class="btn btn-default" id="automated-rainbow" ' + (this.color === 'rainbow' ? 'disabled' : '') + '>Rainbow</button>' +
                         '<button type="button" class="btn btn-default" id="automated-black" ' + (this.color === 'black' ? 'disabled' : '') + '>Black</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                    '<div class="btn-group">' +
+                        '<button type="button" class="btn btn-default" id="automated-martingale" ' + (this.method === 'martingale' ? 'disabled' : '') + '>Martingale</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-great-martingale" ' + (this.method === 'great martingale' ? 'disabled' : '') + '>Great Martingale</button>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -170,7 +180,9 @@ function Automated() {
         },
         'theme': document.getElementById('automated-theme-switch'),
 		'safebetamount': document.getElementById('automated-safe-bet-amount'),
-		'calculatesafebet': document.getElementById('automated-calculate-safe-bet')
+		'calculatesafebet': document.getElementById('automated-calculate-safe-bet'),
+        'martingale': document.getElementById('automated-martingale'),
+        'greatmartingale': document.getElementById('automated-great-martingale')
     };
 
     this.updater = setInterval(function() { // Update every 2 seconds
@@ -262,6 +274,20 @@ function Automated() {
         self.menu.red.disabled = false;
         self.color = 'rainbow';
         self.log('Current mode: rainbow');
+    };
+
+    this.menu.martingale.onclick = function() {
+        self.menu.martingale.disabled = true;
+        self.menu.greatmartingale.disabled = false;
+        self.method = 'martingale';
+        self.log('Current method: Martingale');
+    };
+
+    this.menu.greatmartingale.onclick = function() {
+        self.menu.martingale.disabled = false;
+        self.menu.greatmartingale.disabled = true;
+        self.method = 'great martingale';
+        self.log('Current method: Great martingale');
     };
 
     this.menu.theme.onclick = function() {
@@ -421,12 +447,17 @@ Automated.prototype.play = function() {
                 self.stats.wins += 1;
                 self.stats.balance += self.old_base;
                 self.old_base = self.base_bet;
+                self.old_method = self.method;
                 self.bet(self.base_bet);
             } else {
                 self.last_result = 'lose';
                 self.log('Lose!');
                 self.stats.loses += 1;
-                self.bet(self.last_bet * 2);
+                if (self.old_method === 'martingale') {
+                    self.bet(self.last_bet * 2);
+                } else if (self.old_method === 'great martingale') {
+                    self.bet(self.last_bet * 2 + self.old_base);
+                }
             }
         }
     }, 2 * 1000);
@@ -436,10 +467,15 @@ Automated.prototype.play = function() {
 
 Automated.prototype.start = function() {
     this.old_base = this.base_bet;
+    this.old_method = this.method;
     if (this.updateAll()) {
         if (this.last_result === 'lose') {
             this.running = true;
-            this.bet(this.last_bet * 2);
+            if (this.old_method === 'martingale') {
+                this.bet(this.last_bet * 2);
+            } else if (this.old_method === 'great martingale') {
+                this.bet(this.last_bet * 2 + this.old_base);
+            }
             this.play();
         } else {
             this.running = true;
