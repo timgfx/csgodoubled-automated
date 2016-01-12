@@ -103,6 +103,10 @@ Because when you look on the history, you may think it's the safest option to go
 
 ## Changelog
 
+1.25:
+
+- New bet system - `Bet on green`, uses fibonacci sequence.
+
 1.24:
 
 - Great martingale
