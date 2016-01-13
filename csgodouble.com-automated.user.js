@@ -491,7 +491,12 @@ Automated.prototype.play = function() {
                 self.old_base = self.base_bet;
                 self.old_method = self.method;
                 if (self.old_method === 'dalembert') {
-                    self.bet(self.last_bet - 1);
+                    if (self.last_bet !== 1) {
+                        self.bet(self.last_bet - 1);
+                    } else {
+                        self.old_base = self.base_bet;
+                        self.bet(self.base_bet);
+                    }
                 } else {
                     self.bet(self.last_bet);
                 }
