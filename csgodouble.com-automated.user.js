@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.28
+// @version         1.29
 // @author          Mole
 // @match           http://www.csgodouble.com/
 // @match           http://www.csgodouble.com/index.php
@@ -499,10 +499,9 @@ Automated.prototype.play = function() {
                 self.old_base = self.base_bet;
                 self.old_method = self.method;
                 if (self.old_method === 'dalembert') {
-                    if (self.last_bet !== 1) {
+                    if (self.last_bet > self.old_base) {
                         self.bet(self.last_bet - 1);
                     } else {
-                        self.old_base = self.base_bet;
                         self.bet(self.base_bet);
                     }
                 } else {
