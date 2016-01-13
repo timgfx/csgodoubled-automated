@@ -113,7 +113,7 @@ function Automated() {
                     '<div class="btn-group">' +
                         '<button type="button" class="btn btn-default" id="automated-martingale" ' + (this.method === 'martingale' ? 'disabled' : '') + '>Martingale</button>' +
                         '<button type="button" class="btn btn-default" id="automated-great-martingale" ' + (this.method === 'great martingale' ? 'disabled' : '') + '>Great Martingale</button>' +
-                        '<button type="button" class="btn btn-default" id="automated-dalembert" ' + (this.method === 'dalembert' ? 'disabled' : '') + '>D’alembert</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-dalembert" ' + (this.method === 'dalembert' ? 'disabled' : '') + '>D\'alembert</button>' +
                         '<button type="button" class="btn btn-default" id="automated-bet-green" ' + (this.method === 'green' ? 'disabled' : '') + '>Green</button>' +
                     '</div>' +
                 '</div>' +
