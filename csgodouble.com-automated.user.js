@@ -385,6 +385,7 @@ Automated.prototype.updateHistory = function() {
 };
 
 Automated.prototype.updateStats = function() {
+    self.stats.balance = parseInt(self.balance || 0) - parseInt(self.starting_balance || 0);
     this.menu.statistics.wins.innerHTML = this.stats.wins;
     this.menu.statistics.loses.innerHTML = this.stats.loses;
     this.menu.statistics.balance.innerHTML = this.stats.balance;
@@ -477,7 +478,6 @@ Automated.prototype.play = function() {
         var history = self.history;
         if (!self.waiting_for_bet && self.updateAll() && !history.equals(self.history)) {
             self.waiting_for_bet = true;
-            self.stats.balance = parseInt(self.balance) - parseInt(self.starting_balance);
             if (self.last_color === null) {
                 self.bet(self.base_bet);
             } else if (self.last_color === self.history[self.history.length - 1]) {
