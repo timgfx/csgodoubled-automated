@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.25
+// @version         1.26
 // @author          Mole
 // @match           http://www.csgodouble.com/
 // @match           http://www.csgodouble.com/index.php
@@ -113,6 +113,7 @@ function Automated() {
                     '<div class="btn-group">' +
                         '<button type="button" class="btn btn-default" id="automated-martingale" ' + (this.method === 'martingale' ? 'disabled' : '') + '>Martingale</button>' +
                         '<button type="button" class="btn btn-default" id="automated-great-martingale" ' + (this.method === 'great martingale' ? 'disabled' : '') + '>Great Martingale</button>' +
+                        '<button type="button" class="btn btn-default" id="automated-dalembert" ' + (this.method === 'dalembert' ? 'disabled' : '') + '>D’alembert</button>' +
                         '<button type="button" class="btn btn-default" id="automated-bet-green" ' + (this.method === 'green' ? 'disabled' : '') + '>Green</button>' +
                     '</div>' +
                 '</div>' +
@@ -186,6 +187,7 @@ function Automated() {
         'martingale': document.getElementById('automated-martingale'),
         'greatmartingale': document.getElementById('automated-great-martingale'),
         'betgreen': document.getElementById('automated-bet-green'),
+        'dalembert': document.getElementById('automated-dalembert'),
         'hideongreen': document.getElementsByClassName('automated-hide-on-green')
     };
 
@@ -284,6 +286,7 @@ function Automated() {
         self.menu.martingale.disabled = true;
         self.menu.greatmartingale.disabled = false;
         self.menu.betgreen.disabled = false;
+        self.menu.dalembert.disabled = false;
         for (var i = 0; i < self.menu.hideongreen.length; i++) {
             self.menu.hideongreen[i].style.display = 'block';
         }
@@ -295,6 +298,7 @@ function Automated() {
         self.menu.martingale.disabled = false;
         self.menu.greatmartingale.disabled = true;
         self.menu.betgreen.disabled = false;
+        self.menu.dalembert.disabled = false;
         for (var i = 0; i < self.menu.hideongreen.length; i++) {
             self.menu.hideongreen[i].style.display = 'block';
         }
@@ -302,10 +306,23 @@ function Automated() {
         self.log('Current method: Great martingale');
     };
 
+    this.menu.dalembert.onclick = function() {
+        self.menu.martingale.disabled = false;
+        self.menu.greatmartingale.disabled = false;
+        self.menu.betgreen.disabled = false;
+        self.menu.dalembert.disabled = true;
+        for (var i = 0; i < self.menu.hideongreen.length; i++) {
+            self.menu.hideongreen[i].style.display = 'block';
+        }
+        self.method = 'dalembert';
+        self.log('Current method: D\'alembert');
+    };
+
     this.menu.betgreen.onclick = function() {
         self.menu.martingale.disabled = false;
         self.menu.greatmartingale.disabled = false;
         self.menu.betgreen.disabled = true;
+        self.menu.dalembert.disabled = false;
         for (var i = 0; i < self.menu.hideongreen.length; i++) {
             self.menu.hideongreen[i].style.display = 'none';
         }
@@ -473,7 +490,11 @@ Automated.prototype.play = function() {
                 self.stats.balance += self.old_base;
                 self.old_base = self.base_bet;
                 self.old_method = self.method;
-                self.bet(self.base_bet);
+                if (self.old_method === 'dalembert') {
+                    self.bet(self.last_bet + 1);
+                } else {
+                    self.bet(self.last_bet - 1);
+                }
             } else {
                 self.last_result = 'lose';
                 self.log('Lose!');
@@ -494,6 +515,8 @@ Automated.prototype.play = function() {
                         bet_value = self.bet_history[self.bet_history.length - 1] + self.bet_history[self.bet_history.length - 2];
                     }
                     self.bet(bet_value, 'green');
+                } else if (self.old_method === 'dalembert') {
+                    self.bet(self.last_bet + 1);
                 }
             }
         }
@@ -524,6 +547,8 @@ Automated.prototype.start = function() {
                     bet_value = self.bet_history[self.bet_history.length - 1] + self.bet_history[self.bet_history.length - 2];
                 }
                 self.bet(bet_value, 'green');
+            } else if (self.old_method === 'dalembert') {
+                self.bet(self.last_bet + 1);
             }
             this.play();
         } else {
