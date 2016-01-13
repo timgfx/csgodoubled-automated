@@ -477,6 +477,7 @@ Automated.prototype.play = function() {
         var history = self.history;
         if (!self.waiting_for_bet && self.updateAll() && !history.equals(self.history)) {
             self.waiting_for_bet = true;
+            self.stats.balance = parseInt(self.balance) - parseInt(self.starting_balance);
             if (self.last_color === null) {
                 self.bet(self.base_bet);
             } else if (self.last_color === self.history[self.history.length - 1]) {
@@ -487,7 +488,6 @@ Automated.prototype.play = function() {
                 self.last_result = 'win';
                 self.log('Win!');
                 self.stats.wins += 1;
-                self.stats.balance += self.old_base;
                 self.old_base = self.base_bet;
                 self.old_method = self.method;
                 if (self.old_method === 'dalembert') {
