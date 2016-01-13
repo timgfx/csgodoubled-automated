@@ -2,7 +2,7 @@
 // @name            csgodouble.com - automated
 // @description     An userscript that automates csgodouble.com betting using martingale system.
 // @namespace       automated@mole
-// @version         1.27
+// @version         1.28
 // @author          Mole
 // @match           http://www.csgodouble.com/
 // @match           http://www.csgodouble.com/index.php
@@ -194,9 +194,10 @@ function Automated() {
     this.updater = setInterval(function() { // Update every 2 seconds
         if (!self.running) {
             if (self.updateAll()) {
-				if (self.calculatesafebet) {
+				if (self.calculate_safe_bet) {
 					self.base_bet = Math.floor(self.balance / Math.pow(2, self.safe_bet_amount + 1));
 					self.menu.basebet.value = self.base_bet;
+                    if (self.debug) { self.logdebug('New base bet: ' + self.base_bet); }
 				}
 				
 				if (self.menu.stop.disabled && self.menu.start.disabled) {
@@ -237,6 +238,13 @@ function Automated() {
         var value = parseInt(self.menu.minbalance.value);
         if (!isNaN(value)) {
             self.min_balance = value;
+        }
+    };
+
+    this.menu.safebetamount.onchange = function() {
+        var value = parseInt(self.menu.safebetamount.value);
+        if (!isNaN(value)) {
+            self.safe_bet_amount = value;
         }
     };
 
@@ -481,9 +489,9 @@ Automated.prototype.play = function() {
             if (self.last_color === null) {
                 self.bet(self.base_bet);
             } else if (self.last_color === self.history[self.history.length - 1]) {
-				if (self.calculatesafebet) {
+				if (self.calculate_safe_bet) {
                     self.base_bet = Math.floor(self.balance / Math.pow(2, self.safe_bet_amount + 1));
-					self.menu.safebetamount.value = self.base_bet;
+					self.menu.basebet.value = self.base_bet;
 				}
                 self.last_result = 'win';
                 self.log('Win!');
@@ -531,6 +539,10 @@ Automated.prototype.play = function() {
 };
 
 Automated.prototype.start = function() {
+    if (self.calculate_safe_bet) {
+        self.base_bet = Math.floor(self.balance / Math.pow(2, self.safe_bet_amount + 1));
+        self.menu.basebet.value = self.base_bet;
+    }
     this.old_base = this.base_bet;
     this.old_method = this.method;
     if (this.updateAll()) {
