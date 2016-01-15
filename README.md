@@ -10,7 +10,7 @@ Full site dark mode
 
 ![Screenshot](http://i.imgur.com/CGpzOB1.png)
 
-## [![Install](https://i.imgur.com/hKHfyWz.png)](https://raw.githubusercontent.com/Aareksio/csgodoubled-automated/master/csgodouble.com-automated.user.js)
+## 
 
 ## Requirements
 Requires [Greasemonkey](http://www.greasespot.net/) on Firefox and [Tampermonkey](http://tampermonkey.net/) on Chrome.
